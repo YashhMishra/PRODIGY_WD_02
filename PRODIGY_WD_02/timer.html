@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Countdown Timer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .timer {
+      font-size: 48px;
+      margin: 20px;
+      color: #333;
+    }
+
+    .input-group {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="number"] {
+      width: 60px;
+      text-align: center;
+      font-size: 18px;
+      padding: 5px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      margin: 0 5px;
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 5px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    .btn:hover {
+      background-color: #45a049;
+    }
+
+    .btn:active {
+      background-color: #3d8b3d;
+    }
+
+    .btn:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  </style>
+  
+</head>
+<body>
+  <div class="timer">00:00:00</div>
+  <input type="number" id="minutes" min="1" placeholder="Set minutes">
+  <input type="number" id="seconds" min="0" max="59" placeholder="Set seconds">
+  <br>
+  <button class="btn" onclick="startTimer()">Start</button>
+  <button class="btn" onclick="stopTimer()">Stop</button>
+  <button class="btn" onclick="resetTimer()">Reset</button>
+  <button class="btn" onclick="restartTimer()">Restart</button>
+
+  <script>
+    let timerInterval;
+    let totalTimeInSeconds = 0;
+    let timeRemainingInSeconds = 0;
+    let isTimerRunning = false;
+
+    function startTimer() {
+      if (!isTimerRunning) {
+        const minutesInput = document.getElementById('minutes');
+        const secondsInput = document.getElementById('seconds');
+
+        const minutes = parseInt(minutesInput.value) || 0;
+        const seconds = parseInt(secondsInput.value) || 0;
+
+        if (minutes === 0 && seconds === 0) {
+          alert('Please set a valid time.');
+          return;
+        }
+
+        if (isTimerRunning) {
+          clearInterval(timerInterval);
+        }
+
+        totalTimeInSeconds = minutes * 60 + seconds;
+        timeRemainingInSeconds = timeRemainingInSeconds || totalTimeInSeconds;
+
+        updateTimerDisplay();
+        timerInterval = setInterval(updateTimer, 1000);
+        isTimerRunning = true;
+      }
+    }
+
+    function updateTimer() {
+      if (timeRemainingInSeconds > 0) {
+        timeRemainingInSeconds--;
+        updateTimerDisplay();
+      } else {
+        stopTimer();
+        alert('Countdown complete!');
+      }
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+      isTimerRunning = false;
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timeRemainingInSeconds = 0;
+      isTimerRunning = false;
+      updateTimerDisplay();
+    }
+
+    function restartTimer() {
+      if (!isTimerRunning) {
+        startTimer();
+      }
+    }
+
+    function updateTimerDisplay() {
+      const hours = Math.floor(timeRemainingInSeconds / 3600);
+      const minutes = Math.floor((timeRemainingInSeconds % 3600) / 60);
+      const seconds = timeRemainingInSeconds % 60;
+
+      const timerDisplay = document.querySelector('.timer');
+      timerDisplay.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+  </script>
+</body>
+</html>
